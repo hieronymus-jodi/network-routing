@@ -42,18 +42,40 @@ public class Router {
         this.linkCosts.add(cost);
     }
 
-    // Routes packet to next router. Returns true if successful.
+    // Calculates route and routes packet to next router. Returns true if successful.
     public boolean routePacket (Packet packet) {
         // If the destination is in this router's network, don't need to go to other routers
         if (isDestinationNetwork(packet.getDestinationAddress())) {
             deliverPacketToHost(packet);
             return true;
         }
-        else { // Keep going
+        else { // Calculate route and keep going
 
             // TODO
             sortingAlgorithm.calculateRoute(null);
             return routePacket(packet);
+        }
+    }
+
+    // Passes packet on predetermined route
+    public boolean passPacket (Packet packet, List<Integer> networkIDs) {
+        // If the destination is in this router's network, don't need to go to other routers
+        if (isDestinationNetwork(packet.getDestinationAddress())) {
+            deliverPacketToHost(packet);
+            return true;
+        }
+        else { // Pass it on
+            // Find next router in sequence, pass packet on
+            boolean successfulPass = false;
+            for (Router router : this.knownRouters) {
+                if (router.networkID == networkIDs.get(0)) {
+                    networkIDs.remove(0); // Remove router from sequence
+                    successfulPass = router.passPacket(packet, networkIDs);
+                    break;
+                }
+            }
+            
+            return successfulPass;
         }
     }
 
