@@ -13,7 +13,7 @@ public class Main {
         System.out.println(" *** *** *** *** *** *** *** *** *** *** *** *** \n");
 
         // Create routers
-        int[] networkIDs = { 191, 200, 197, 219, 213, 193, 204, 196, 222 };
+        int[] networkIDs = { 1, 40, 23, 119, 103, 33, 104, 10, 126 };
         int[][] knownRouters = { {1,2}, {0,3,4,5}, {0,3,4,5}, {1,2,6,7}, {1,2,6,7}, {1,2,6,7}, {3,4,5,8}, {3,4,5,8}, {6,7} };
         int[][] linkCosts = { {1,3}, {1,6,5,7}, {3,4,5,2}, {6,4,8,3}, {5,5,4,7}, {7,2,5,4}, {8,4,5,2}, {3,7,4,1}, {2,1} };
 
@@ -21,6 +21,15 @@ public class Main {
         int[][] graphNetwork = createGraph(knownRouters, linkCosts);
         printNetwork(network);
         printGraph(graphNetwork);
+
+        // Create packet
+        IPv4Address sourceAddress = new IPv4Address(1, 0, 1, 2);
+        IPv4Address destAddress = new IPv4Address(126, 10, 1, 8);
+        String appData = "~* Yay! I made it to my destination! *~";
+        Packet packet = new Packet(sourceAddress, destAddress, appData);
+
+        // Route packet using Dijkstra's
+        dijkstraRouting(network, graphNetwork, packet);
     }
 
     // Instantiates network
@@ -94,5 +103,32 @@ public class Main {
             System.out.println();
         }
         System.out.println(" +++ +++ +++ +++ +++ +++ +++ +++ \n");
+    }
+
+    // Finds route for packet using Dijkstra's algorithm
+    // Reference: https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/
+    private static boolean dijkstraRouting(List<Router> routers, int[][] graph, Packet packet) {
+        // Get IPS from packet, convert to networks
+        int srcNet = packet.getSourceAddress().getNetwork();
+        int destNet = packet.getDestinationAddress().getNetwork();
+
+        // Holds ID of source and destination routers based on their ID in the list
+        int srcID = -1, destID = -1;
+        for (int i = 0; i < routers.size(); i++) {
+            if (srcNet == routers.get(i).networkID) {
+                srcID = i;
+            }
+            else if (destNet == routers.get(i).networkID) {
+                destID = i;
+            }
+        }
+
+        System.out.println("SRC: " + srcID + " - DEST: " + destID);
+        // If failed to find routers
+        if (srcID == -1 | destID == -1) {
+            return false;
+        }
+
+        return true;
     }
 }
