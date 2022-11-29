@@ -1,23 +1,49 @@
 // Jodi Hieronymus - CPE 400 Final Project - Fall 2022
 
 // Class representing the router that a packet is sent through.
+import java.util.ArrayList;
 import java.util.List;
 
 public class Router {
-    List<Router> knownRouters;
+    List<Router> knownRouters = new ArrayList<Router>();
+    List<Integer> linkCosts = new ArrayList<Integer>();
     int networkID; // Using Class A IPv4 addresses - This should match first byte of address
     boolean isActive;
     FailMethod failMethod;
     Algorithm sortingAlgorithm;
 
-    public Router(int networkID, FailMethod failMethod, Algorithm sortingAlgorithm){
+    public Router(int networkID, FailMethod failMethod, Algorithm sortingAlgorithm) {
         this.networkID = networkID;
         this.failMethod = failMethod;
         this.sortingAlgorithm = sortingAlgorithm;
+
+        isActive = true;
+    }
+
+    // Prints router information
+    public void printInfo() {
+        System.out.print("* ---- Router -- ");
+        System.out.print("ID: " + networkID + " -- ");
+        System.out.print("Active: " + isActive + " -- ");
+        System.out.println("---- *");
+    }
+
+    // Prints all known routers
+    public void printKnownRouters() {
+
+        for (int i = 0; i < knownRouters.size(); i++) {
+            System.out.print("      -> (COST: " + linkCosts.get(i) + ") ");
+            knownRouters.get(i).printInfo();
+        }
+    }
+
+    public void addKnownRouter(Router newRouter, Integer cost) {
+        this.knownRouters.add(newRouter);
+        this.linkCosts.add(cost);
     }
 
     // Routes packet to next router. Returns true if successful.
-    public boolean routePacket (Packet packet){
+    public boolean routePacket (Packet packet) {
         // If the destination is in this router's network, don't need to go to other routers
         if (isDestinationNetwork(packet.getDestinationAddress())) {
             deliverPacketToHost(packet);

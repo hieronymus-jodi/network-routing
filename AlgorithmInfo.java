@@ -3,7 +3,7 @@
 // Holds necessary information for routing.
 public class AlgorithmInfo {
     
-    public AlgorithmInfo(){
+    public AlgorithmInfo() {
         // TODO
     }
 }
