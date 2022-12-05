@@ -90,7 +90,7 @@ public class Main {
     // Add graph representation to each router
     private static void setRoutersGraphs(List<Router> network, int[][] graphNetwork) {
         for (Router router : network) {
-            router.setNetworkGraph(graphNetwork);
+            router.setNetworkGraph(graphNetwork, network);
         }
     }
 

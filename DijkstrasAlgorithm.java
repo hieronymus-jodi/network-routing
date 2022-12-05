@@ -54,13 +54,13 @@ public class DijkstrasAlgorithm {
 	}
 
     public void printPath(List<Integer> path) {
-        System.out.print("PATH : ");
+        System.out.print("\nPATH : ");
 
         for (Integer ID : path) {
             System.out.print(ID + " ");
         }
 
-        System.out.println();
+        System.out.println('\n');
     }
 
     // Finds shortest path based on prev calculations

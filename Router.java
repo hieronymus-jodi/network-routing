@@ -12,6 +12,7 @@ public class Router {
     // Dijkstras
     DijkstrasAlgorithm dijkstras;
     int[][] graphNetwork;
+    List<Router> allRouters = new ArrayList<Router>();
 
     // Belman Ford
     List<Router> knownRouters = new ArrayList<Router>();
@@ -48,8 +49,9 @@ public class Router {
     }
 
     // Dijkstras - Sets the entire network of routers in graph form
-    public void setNetworkGraph(int[][] networkGraph) {
+    public void setNetworkGraph(int[][] networkGraph, List<Router> allRouters) {
         this.graphNetwork = networkGraph;
+        this.allRouters = allRouters;
     }
 
     // Calculates route and routes packet to next router. Returns true if successful.
@@ -73,15 +75,17 @@ public class Router {
                     List<Integer> path = new ArrayList<Integer>();
                     dijkstras.getPath(destMAC, path);
                     dijkstras.printPath(path);
+
+                    // Pass packet to next router
+                    passPacket(packet, path);
             }
-            // sortingAlgorithm.calculateRoute(null);
-            // return routePacket(packet);
+
             return true;
         }
     }
 
     // Passes packet on predetermined route
-    public boolean passPacket (Packet packet, List<Integer> networkIDs) {
+    public boolean passPacket (Packet packet, List<Integer> path) {
         // If the destination is in this router's network, don't need to go to other routers
         if (isDestinationNetwork(packet.getDestinationAddress())) {
             deliverPacketToHost(packet);
@@ -89,16 +93,10 @@ public class Router {
         }
         else { // Pass it on
             // Find next router in sequence, pass packet on
-            boolean successfulPass = false;
-            for (Router router : this.knownRouters) {
-                if (router.networkID == networkIDs.get(0)) {
-                    networkIDs.remove(0); // Remove router from sequence
-                    successfulPass = router.passPacket(packet, networkIDs);
-                    break;
-                }
-            }
+            path.remove(0); // Removing this ID
+            int nextRouter = path.get(0);
             
-            return successfulPass;
+            return allRouters.get(nextRouter).passPacket(packet, path);
         }
     }
 
