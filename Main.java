@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
+    static final int NUMROUTERS = 9;
+    static final int NUMTESTS = 15;
     public static void main(String[] args) {
         System.out.println(" *** *** *** *** *** *** *** *** *** *** *** *** ");
         System.out.println(" *** *** *** *** Network Routing *** *** *** *** ");
@@ -21,15 +23,18 @@ public class Main {
         int[][] graphNetwork = createGraph(knownRouters, linkCosts);
         printNetwork(network);
         printGraph(graphNetwork);
+        setRoutersGraphs(network, graphNetwork);
 
         // Create packet
+        int sourceMAC = 0;
+        int destinationMAC = 8;
         IPv4Address sourceAddress = new IPv4Address(1, 0, 1, 2);
         IPv4Address destAddress = new IPv4Address(126, 10, 1, 8);
         String appData = "~* Yay! I made it to my destination! *~";
-        Packet packet = new Packet(sourceAddress, destAddress, appData);
+        Packet packet = new Packet(sourceMAC, destinationMAC, sourceAddress, destAddress, appData);
 
         // Route packet using Dijkstra's
-        dijkstraRouting(network, graphNetwork, packet);
+        routeDijkstras(network.get(0), packet);
     }
 
     // Instantiates network
@@ -42,7 +47,7 @@ public class Main {
 
         // Need to make all routers first
         for (int id : networkIDs) {
-            routerList.add( new Router(id, null, null) );
+            routerList.add( new Router(id, networkIDs.length) );
         }
 
         // Connect routers
@@ -82,6 +87,20 @@ public class Main {
         return graphNetwork;
     }
 
+    // Add graph representation to each router
+    private static void setRoutersGraphs(List<Router> network, int[][] graphNetwork) {
+        for (Router router : network) {
+            router.setNetworkGraph(graphNetwork);
+        }
+    }
+
+    // Routes packet using Dijkstra's Algorithm, returning success
+    private static boolean routeDijkstras(Router sourceRouter, Packet packet) {
+        packet.setDijkstras();
+        sourceRouter.routePacket(packet);
+        return true; // TODO
+    }
+
     // Prints network info
     private static void printNetwork(List<Router> routerList) {
         System.out.println(" +++ +++ +++ NETWORK +++ +++ +++ ");
@@ -105,30 +124,4 @@ public class Main {
         System.out.println(" +++ +++ +++ +++ +++ +++ +++ +++ \n");
     }
 
-    // Finds route for packet using Dijkstra's algorithm
-    // Reference: https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/
-    private static boolean dijkstraRouting(List<Router> routers, int[][] graph, Packet packet) {
-        // Get IPS from packet, convert to networks
-        int srcNet = packet.getSourceAddress().getNetwork();
-        int destNet = packet.getDestinationAddress().getNetwork();
-
-        // Holds ID of source and destination routers based on their ID in the list
-        int srcID = -1, destID = -1;
-        for (int i = 0; i < routers.size(); i++) {
-            if (srcNet == routers.get(i).networkID) {
-                srcID = i;
-            }
-            else if (destNet == routers.get(i).networkID) {
-                destID = i;
-            }
-        }
-
-        System.out.println("SRC: " + srcID + " - DEST: " + destID);
-        // If failed to find routers
-        if (srcID == -1 | destID == -1) {
-            return false;
-        }
-
-        return true;
-    }
 }

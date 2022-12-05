@@ -5,17 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Router {
-    List<Router> knownRouters = new ArrayList<Router>();
-    List<Integer> linkCosts = new ArrayList<Integer>();
     int networkID; // Using Class A IPv4 addresses - This should match first byte of address
     boolean isActive;
     FailMethod failMethod;
-    Algorithm sortingAlgorithm;
+    
+    // Dijkstras
+    DijkstrasAlgorithm dijkstras;
+    int[][] graphNetwork;
 
-    public Router(int networkID, FailMethod failMethod, Algorithm sortingAlgorithm) {
+    // Belman Ford
+    List<Router> knownRouters = new ArrayList<Router>();
+    List<Integer> linkCosts = new ArrayList<Integer>();
+
+    public Router(int networkID, int numRouters) {
         this.networkID = networkID;
-        this.failMethod = failMethod;
-        this.sortingAlgorithm = sortingAlgorithm;
+        this.dijkstras = new DijkstrasAlgorithm(numRouters);
 
         isActive = true;
     }
@@ -28,7 +32,7 @@ public class Router {
         System.out.println("---- *");
     }
 
-    // Prints all known routers
+    // Belman Ford - Prints all known routers
     public void printKnownRouters() {
 
         for (int i = 0; i < knownRouters.size(); i++) {
@@ -37,9 +41,15 @@ public class Router {
         }
     }
 
+    // Belman Ford - Adds a known router
     public void addKnownRouter(Router newRouter, Integer cost) {
         this.knownRouters.add(newRouter);
         this.linkCosts.add(cost);
+    }
+
+    // Dijkstras - Sets the entire network of routers in graph form
+    public void setNetworkGraph(int[][] networkGraph) {
+        this.graphNetwork = networkGraph;
     }
 
     // Calculates route and routes packet to next router. Returns true if successful.
@@ -50,10 +60,23 @@ public class Router {
             return true;
         }
         else { // Calculate route and keep going
+            char method = packet.getRouteMethod();
+            int sourceMAC = packet.getSourceMAC();
+            int destMAC = packet.getDestinationMAC();
 
-            // TODO
-            sortingAlgorithm.calculateRoute(null);
-            return routePacket(packet);
+            switch (method) {
+                case 'D':
+                    // Only run algorithm if haven't already calculated
+                    if(!dijkstras.getRanDijkstras()) {
+                        dijkstras.dijkstra(graphNetwork, sourceMAC);
+                    }
+                    List<Integer> path = new ArrayList<Integer>();
+                    dijkstras.getPath(destMAC, path);
+                    dijkstras.printPath(path);
+            }
+            // sortingAlgorithm.calculateRoute(null);
+            // return routePacket(packet);
+            return true;
         }
     }
 
