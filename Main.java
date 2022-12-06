@@ -94,11 +94,22 @@ public class Main {
         }
     }
 
-    // Routes packet using Dijkstra's Algorithm, returning success
-    private static boolean routeDijkstras(Router sourceRouter, Packet packet) {
+    // Routes packet using Dijkstra's Algorithm NUMTESTS times. Returns time results
+    private static List<Long> routeDijkstras(Router sourceRouter, Packet packet) {
+        List<Long> times = new ArrayList<Long>();
         packet.setDijkstras();
-        sourceRouter.routePacket(packet);
-        return true; // TODO
+        for (int i = 0; i < NUMTESTS; i++) {
+            int testNum = i + 1;
+            System.out.println("-- -- DIJKSTRAS TEST #" + testNum + "/" + NUMTESTS + " -- --");
+
+            long time = sourceRouter.routePacket(packet);
+            times.add(time);
+
+            System.out.println("-- DIJSKTRAS #" + testNum + "/" + NUMTESTS + " RESULT: " + time + "ns");
+        }
+
+        printTimeResults("DIJKSTRA'S", times);
+        return times;
     }
 
     // Prints network info
@@ -122,6 +133,17 @@ public class Main {
             System.out.println();
         }
         System.out.println(" +++ +++ +++ +++ +++ +++ +++ +++ \n");
+    }
+
+    // Prints time results
+    private static void printTimeResults(String testName, List<Long> rawTimes) {
+        // long timeMS = rawTime[i] / 1000000; // Converts to milliseconds
+        System.out.println("---- ---- * " + testName + " RESULTS * ---- ----");
+        for (int testNum = 1; testNum < NUMTESTS + 1; testNum++) {
+            String testTime = rawTimes.get(testNum - 1) + "ns";
+            System.out.println("--- > " + testNum + " / " + NUMTESTS + ": " + testTime);
+        }
+        System.out.println("---- ---- ---- ---- ---- ---- ---- ----\n");
     }
 
 }

@@ -4,7 +4,6 @@
 // Reference: https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/ 
 // Reference: https://www.geeksforgeeks.org/printing-paths-dijkstras-shortest-path-algorithm/
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DijkstrasAlgorithm {
@@ -40,17 +39,6 @@ public class DijkstrasAlgorithm {
 			}
 
 		return minID;
-	}
-
-    // *TODO: Delete. From Geeks for Geeks
-	void printSolution(int cost[], int parents[])
-	{
-		System.out.println(
-			"numRoutersertex \t\t Distance from Source");
-		for (int i = 0; i < numRouters; i++)
-			System.out.println(i + " \t\t " + cost[i]);
-        List<Integer> path = new ArrayList<Integer>();
-        getPath(numRouters-1, path);
 	}
 
     public void printPath(List<Integer> path) {
@@ -124,7 +112,6 @@ public class DijkstrasAlgorithm {
                 }
 		}
 
-		printSolution(cost, parents); // *TODO: Delete
 	}
 
     // Testing to make sure Dijkstras works.

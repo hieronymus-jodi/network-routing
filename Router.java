@@ -54,12 +54,15 @@ public class Router {
         this.allRouters = allRouters;
     }
 
-    // Calculates route and routes packet to next router. Returns true if successful.
-    public boolean routePacket (Packet packet) {
+    // Calculates route and routes packet to next router. Returns time taken.
+    public long routePacket (Packet packet) {
+        long startTime = System.nanoTime(); // Used to calculate time
+
         // If the destination is in this router's network, don't need to go to other routers
         if (isDestinationNetwork(packet.getDestinationAddress())) {
             deliverPacketToHost(packet);
-            return true;
+            long endTime = System.nanoTime();
+            return endTime - startTime;
         }
         else { // Calculate route and keep going
             char method = packet.getRouteMethod();
@@ -80,7 +83,8 @@ public class Router {
                     passPacket(packet, path);
             }
 
-            return true;
+            long endTime = System.nanoTime();
+            return endTime - startTime;
         }
     }
 
