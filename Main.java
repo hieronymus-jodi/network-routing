@@ -34,7 +34,8 @@ public class Main {
         Packet packet = new Packet(sourceMAC, destinationMAC, sourceAddress, destAddress, appData);
 
         // Route packet using Dijkstra's
-        routeDijkstras(network.get(0), packet);
+        routeDijkstrasAllActive(network.get(0), packet);
+        routeDijkstrasRouterInactive(network.get(0), packet, network, 5);
     }
 
     // Instantiates network
@@ -95,14 +96,42 @@ public class Main {
     }
 
     // Routes packet using Dijkstra's Algorithm NUMTESTS times. Returns time results
-    private static List<Long> routeDijkstras(Router sourceRouter, Packet packet) {
+    //      All routers are active
+    private static List<Long> routeDijkstrasAllActive(Router sourceRouter, Packet packet) {
         List<Long> times = new ArrayList<Long>();
         packet.setDijkstras();
-        for (int i = 0; i < NUMTESTS; i++) {
-            int testNum = i + 1;
+        for (int testNum = 1; testNum < NUMTESTS + 1; testNum++) {
             System.out.println("-- -- DIJKSTRAS TEST #" + testNum + "/" + NUMTESTS + " -- --");
 
             long time = sourceRouter.routePacket(packet);
+            times.add(time);
+
+            System.out.println("-- DIJSKTRAS #" + testNum + "/" + NUMTESTS + " RESULT: " + time + "ns");
+        }
+
+        printTimeResults("DIJKSTRA'S", times);
+        return times;
+    }
+
+    // Routes packet using Dijkstra's Algorithm NUMTESTS times. Returns time results
+    //      Sets specified router as inactive
+    private static List<Long> routeDijkstrasRouterInactive(Router sourceRouter, Packet packet, List<Router> network, int inactiveRouterID) {
+        List<Long> times = new ArrayList<Long>();
+        packet.setDijkstras();
+
+        // Start with all routers active
+        System.out.println("-- -- DIJKSTRAS TEST # 1/" + NUMTESTS + " -- --");
+        long time = sourceRouter.routePacket(packet);
+        times.add(time);
+        System.out.println("-- DIJSKTRAS #1/" + NUMTESTS + " RESULT: " + time + "ns");
+
+        // Set router as inactive
+        network.get(inactiveRouterID).setIsActive(false);
+        // Continue at 2
+        for (int testNum = 2; testNum < NUMTESTS + 1; testNum++) {
+            System.out.println("-- -- DIJKSTRAS TEST #" + testNum + "/" + NUMTESTS + " -- --");
+
+            time = sourceRouter.routePacket(packet);
             times.add(time);
 
             System.out.println("-- DIJSKTRAS #" + testNum + "/" + NUMTESTS + " RESULT: " + time + "ns");
@@ -143,7 +172,7 @@ public class Main {
             String testTime = rawTimes.get(testNum - 1) + "ns";
             System.out.println("--- > " + testNum + " / " + NUMTESTS + ": " + testTime);
         }
-        System.out.println("---- ---- ---- ---- ---- ---- ---- ----\n");
+        System.out.println("---- ---- ---- ---- ---- ---- ---- ----");
     }
 
 }

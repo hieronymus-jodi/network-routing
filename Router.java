@@ -25,6 +25,11 @@ public class Router {
         isActive = true;
     }
 
+    // Used to set isActive externally
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
     // Prints router information
     public void printInfo() {
         System.out.print("* ---- Router -- ");
@@ -57,11 +62,12 @@ public class Router {
     // Calculates route and routes packet to next router. Returns time taken.
     public long routePacket (Packet packet) {
         long startTime = System.nanoTime(); // Used to calculate time
+        long endTime;
 
         // If the destination is in this router's network, don't need to go to other routers
         if (isDestinationNetwork(packet.getDestinationAddress())) {
             deliverPacketToHost(packet);
-            long endTime = System.nanoTime();
+            endTime = System.nanoTime();
             return endTime - startTime;
         }
         else { // Calculate route and keep going
@@ -80,28 +86,41 @@ public class Router {
                     dijkstras.printPath(path);
 
                     // Pass packet to next router
-                    passPacket(packet, path);
+                    boolean successfulPass = passPacket(packet, path);
+                    endTime = System.nanoTime();
+                    if (successfulPass) {
+                        return endTime - startTime;
+                    }
+                    else {
+                        return Long.MAX_VALUE; // Failed to pass; Took infinite time
+                    }
+                default:
+                    return Long.MAX_VALUE; // Failed to route; Took infinite time;
             }
-
-            long endTime = System.nanoTime();
-            return endTime - startTime;
         }
     }
 
-    // Passes packet on predetermined route
+    // Dijkstra's - Passes packet on predetermined route
     public boolean passPacket (Packet packet, List<Integer> path) {
-        // If the destination is in this router's network, don't need to go to other routers
-        if (isDestinationNetwork(packet.getDestinationAddress())) {
-            deliverPacketToHost(packet);
-            return true;
+        // Only accept packet if active
+        if (isActive) {
+            // If the destination is in this router's network, don't need to go to other routers
+            if (isDestinationNetwork(packet.getDestinationAddress())) {
+                deliverPacketToHost(packet);
+                return true;
+            }
+            else { // Pass it on
+                // Find next router in sequence, pass packet on
+                path.remove(0); // Removing this ID
+                int nextRouter = path.get(0);
+                
+                return allRouters.get(nextRouter).passPacket(packet, path);
+            }
         }
-        else { // Pass it on
-            // Find next router in sequence, pass packet on
-            path.remove(0); // Removing this ID
-            int nextRouter = path.get(0);
-            
-            return allRouters.get(nextRouter).passPacket(packet, path);
+        else { // Router is inactive - failed to pass
+            return false;
         }
+
     }
 
     // Checks to see if the packet is for this router's network
