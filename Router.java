@@ -6,6 +6,7 @@ import java.util.List;
 
 public class Router {
     int networkID; // Using Class A IPv4 addresses - This should match first byte of address
+    int MACAddress; // In this case, using the id in the list/array
     boolean isActive;
     FailMethod failMethod;
     
@@ -14,13 +15,15 @@ public class Router {
     int[][] graphNetwork;
     List<Router> allRouters = new ArrayList<Router>();
 
-    // Belman Ford
+    // Naiive Approach
+    NaiiveAlgorithm naiive;
     List<Router> knownRouters = new ArrayList<Router>();
     List<Integer> linkCosts = new ArrayList<Integer>();
 
     public Router(int networkID, int numRouters) {
         this.networkID = networkID;
         this.dijkstras = new DijkstrasAlgorithm(numRouters);
+        this.naiive = new NaiiveAlgorithm();
 
         isActive = true;
     }
@@ -28,6 +31,11 @@ public class Router {
     // Used to set isActive externally
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
+    }
+
+    // Used to check MAC Address - In reality, this wouldn't be requested from router in this way
+    public int getMACAddress() {
+        return MACAddress;
     }
 
     // Prints router information
@@ -38,7 +46,7 @@ public class Router {
         System.out.println("---- *");
     }
 
-    // Belman Ford - Prints all known routers
+    // Naiive Approach - Prints all known routers
     public void printKnownRouters() {
 
         for (int i = 0; i < knownRouters.size(); i++) {
@@ -47,10 +55,15 @@ public class Router {
         }
     }
 
-    // Belman Ford - Adds a known router
+    // Naiive Approach - Adds a known router
     public void addKnownRouter(Router newRouter, Integer cost) {
         this.knownRouters.add(newRouter);
         this.linkCosts.add(cost);
+    }
+
+    // Naiive Approach - Check if this router knows link to destination router using naiive approach
+    public boolean checkIfLinkToDestination(int destMAC, int stepLimit) {
+        return naiive.knowsDestination(destMAC, stepLimit);
     }
 
     // Dijkstras - Sets the entire network of routers in graph form
@@ -83,7 +96,7 @@ public class Router {
                     }
                     List<Integer> path = new ArrayList<Integer>();
                     dijkstras.getPath(destMAC, path);
-                    dijkstras.printPath(path);
+                    printPath(path);
 
                     // Pass packet to next router
                     boolean successfulPass = passPacket(packet, path);
@@ -94,6 +107,9 @@ public class Router {
                     else {
                         return Long.MAX_VALUE; // Failed to pass; Took infinite time
                     }
+                case 'N':
+                    endTime = System.nanoTime();
+                    return endTime - startTime;
                 default:
                     return Long.MAX_VALUE; // Failed to route; Took infinite time;
             }
@@ -135,5 +151,15 @@ public class Router {
         System.out.println("Router: " + networkID + ".0.0.1");
         System.out.println("Host: " + packet.getDestinationAddress().getAddress());
         System.out.println("Application Data: " + packet.getApplicationData() + "\n");
+    }
+
+    public void printPath(List<Integer> path) {
+        System.out.print("\nPATH : ");
+
+        for (Integer ID : path) {
+            System.out.print(ID + " ");
+        }
+
+        System.out.println('\n');
     }
 }

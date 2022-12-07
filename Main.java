@@ -17,6 +17,7 @@ public class Main {
         // Create routers
         int[] networkIDs = { 1, 40, 23, 119, 103, 33, 104, 10, 126 };
         int[][] knownRouters = { {1,2}, {0,3,4,5}, {0,3,4,5}, {1,2,6,7}, {1,2,6,7}, {1,2,6,7}, {3,4,5,8}, {3,4,5,8}, {6,7} };
+        // Costs are in ms
         int[][] linkCosts = { {1,3}, {1,6,5,7}, {3,4,5,2}, {6,4,8,3}, {5,5,4,7}, {7,2,5,4}, {8,4,5,2}, {3,7,4,1}, {2,1} };
 
         List<Router> network = createNetwork(networkIDs, knownRouters, linkCosts);
@@ -34,8 +35,8 @@ public class Main {
         Packet packet = new Packet(sourceMAC, destinationMAC, sourceAddress, destAddress, appData);
 
         // Route packet using Dijkstra's
-        routeDijkstrasAllActive(network.get(0), packet);
-        routeDijkstrasRouterInactive(network.get(0), packet, network, 5);
+        List<Long> DijkstrasSuccess = routeDijkstrasAllActive(network.get(0), packet);
+        List<Long> DijkstrasFail = routeDijkstrasRouterInactive(network.get(0), packet, network, 5);
     }
 
     // Instantiates network

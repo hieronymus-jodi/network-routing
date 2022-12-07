@@ -41,16 +41,6 @@ public class DijkstrasAlgorithm {
 		return minID;
 	}
 
-    public void printPath(List<Integer> path) {
-        System.out.print("\nPATH : ");
-
-        for (Integer ID : path) {
-            System.out.print(ID + " ");
-        }
-
-        System.out.println('\n');
-    }
-
     // Finds shortest path based on prev calculations
     public void getPath(int destMAC, List<Integer> path) {
         getSubPath(destMAC, path);
