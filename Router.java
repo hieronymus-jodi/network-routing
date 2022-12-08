@@ -77,7 +77,7 @@ public class Router {
     }
 
     // Naiive - Sees if knows the destination router directly or indirectly
-    public Router knowsRouter(int destinationMAC, int stepLimit, List<Integer> checkedMACAddresses) {
+    public Router knowsRouter(int destinationMAC, int stepLimit, List<Integer> checkedMACAddresses, List<Boolean> checkResult) {
         // If this router has already been checked, don't check again
         if (checkedMACAddresses.contains(getMACAddress())) {
             return null;
@@ -97,15 +97,18 @@ public class Router {
         // Check immediate routers - Are they the dest?
         for (Router router : knownRouters) {
             if (router.getMACAddress() == destinationMAC) {
+                checkResult.add(true);
                 return this; // This router knows the dest
             }
         }
         // Do the immediate routers know a router that links to the dest?
-        if (naiive.knowsDestination(destinationMAC, stepLimit, checkedMACAddresses).size() > 0 ) {
+        if (naiive.knowsDestination(destinationMAC, stepLimit-1, checkedMACAddresses, checkResult).size() > 0 ) {
             System.out.println("I'm " + getMACAddress() + " and I know " + destinationMAC + " by proxy");
+            checkResult.add(true);
             return this;
         }
 
+        checkResult.add(false);
         return null; // All checks failed
     }
 
@@ -147,9 +150,11 @@ public class Router {
                         }
                     case 'N':
                         List<Integer> checkedMACAddresses = new ArrayList<Integer>(); // Holds MACAddresses that have been checked
+                        List<Boolean> checkResult = new ArrayList<Boolean>();
                         checkedMACAddresses.add(getMACAddress()); // Router checked self earlier
+                        checkResult.add(false); // Don't want to loop
 
-                        List<Router> routersKnowDestination = naiive.knowsDestination(destMAC, 5, checkedMACAddresses);
+                        List<Router> routersKnowDestination = naiive.knowsDestination(destMAC, 5, checkedMACAddresses, checkResult);
                         printOptions(routersKnowDestination);
                         endTime = System.nanoTime();
                         return endTime - startTime;
@@ -188,7 +193,7 @@ public class Router {
 
     // Naiive - Prints routers that are options
     private void printOptions (List<Router> options) {
-        System.out.print("--> Routing options for " + getMACAddress() + ": ");
+        System.out.print("--> Routing options for " + getMACAddress() + " (" + options.size() + " available): ");
         for (Router router : options) {
             System.out.print(router.getMACAddress() + " ");
         }

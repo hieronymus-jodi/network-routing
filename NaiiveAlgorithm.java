@@ -22,16 +22,22 @@ public class NaiiveAlgorithm {
 
     // Utility function that returns whether this router has a path to the destination router
     //          `stepLimit` limits how many routers away from current router to go
-    public List<Router> knowsDestination(int destMAC, int stepLimit, List<Integer> checkedMACAddresses) {
+    public List<Router> knowsDestination(int destMAC, int stepLimit, List<Integer> checkedMACAddresses, List<Boolean> checkResult) {
         List<Router> knowsDest = new ArrayList<Router>();
         // Only continue if we're not at limit
         if (stepLimit > 0) {
             for (Router router : knownRouters) {
                 // If the router hasn't already been checked, check it
+                if (checkedMACAddresses.contains(router.getMACAddress())) {
+                    // if result was pos, add router
+                    //else if next check
+                }
                 if (!checkedMACAddresses.contains(router.getMACAddress())) {
-                    Router knows = router.knowsRouter(destMAC, stepLimit-1, checkedMACAddresses);
-                    System.out.println("Router " + router.getMACAddress() + " knows " + destMAC);
-                    knowsDest.add(knows);
+                    Router knows = router.knowsRouter(destMAC, stepLimit-1, checkedMACAddresses, checkResult);
+                    if (knows != null) {
+                        System.out.println("Router " + router.getMACAddress() + " knows " + destMAC);
+                        knowsDest.add(router);
+                    }
                 }
             }
         }
