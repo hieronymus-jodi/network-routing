@@ -28,15 +28,20 @@ public class Main {
 
         // Create packet
         int sourceMAC = 0;
-        int destinationMAC = 8;
+        int destinationMAC = 6;
         IPv4Address sourceAddress = new IPv4Address(1, 0, 1, 2);
         IPv4Address destAddress = new IPv4Address(126, 10, 1, 8);
         String appData = "~* Yay! I made it to my destination! *~";
         Packet packet = new Packet(sourceMAC, destinationMAC, sourceAddress, destAddress, appData);
 
+        // Route naiively
+
         // Route packet using Dijkstra's
-        List<Long> DijkstrasSuccess = routeDijkstrasAllActive(network.get(0), packet);
-        List<Long> DijkstrasFail = routeDijkstrasRouterInactive(network.get(0), packet, network, 5);
+        //List<Long> DijkstrasSuccess = routeDijkstrasAllActive(network.get(0), packet);
+        //List<Long> DijkstrasFail = routeDijkstrasRouterInactive(network.get(0), packet, network, 5);
+
+        packet.setNaiive();
+        System.out.println(network.get(0).routePacket(packet));
     }
 
     // Instantiates network
@@ -48,14 +53,17 @@ public class Main {
         List<Router> routerList = new ArrayList<Router>();
 
         // Need to make all routers first
+        int MACAddress = 0;
         for (int id : networkIDs) {
-            routerList.add( new Router(id, networkIDs.length) );
+            routerList.add( new Router(id, MACAddress, networkIDs.length) );
+            MACAddress++;
         }
 
         // Connect routers
         for(int i = 0; i < knownRouters.length; i++) { // For each router i
             for(int j = 0; j < knownRouters[i].length; j++) { // For each router j that i knows
                 Router knownRouter = routerList.get(knownRouters[i][j]);
+                System.out.println("Router " + routerList.get(i).getMACAddress() + " knows " + knownRouter.getMACAddress());
                 routerList.get(i).addKnownRouter(knownRouter, linkCosts[i][j]);
             }
         }
@@ -91,6 +99,7 @@ public class Main {
 
     // Add graph representation to each router
     private static void setRoutersGraphs(List<Router> network, int[][] graphNetwork) {
+        int MACAddress = 0;
         for (Router router : network) {
             router.setNetworkGraph(graphNetwork, network);
         }

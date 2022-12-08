@@ -27,6 +27,10 @@ public class Packet {
         this.routeMethod = 'D';
     }
 
+    public void setNaiive() {
+        this.routeMethod = 'N';
+    }
+
     public int getSourceMAC() {
         return sourceMAC;
     }

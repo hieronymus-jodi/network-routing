@@ -3,13 +3,17 @@
 // Contains all of the necessary features to sort using Naiive approach.
 
 import java.util.List;
+
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
+
 import java.util.ArrayList;
 
 public class NaiiveAlgorithm {
+    Router parentRouter;
     List<Router> knownRouters = new ArrayList<Router>(); // List of all routers the router running the algorithm knows
 
-    public NaiiveAlgorithm() {
-
+    public NaiiveAlgorithm(Router parentRouter) {
+        this.parentRouter = parentRouter;
     }
 
     public void setKnownRouters(List<Router> knownRouters) {
@@ -18,25 +22,20 @@ public class NaiiveAlgorithm {
 
     // Utility function that returns whether this router has a path to the destination router
     //          `stepLimit` limits how many routers away from current router to go
-    public boolean knowsDestination(int destMAC, int stepLimit) {
+    public List<Router> knowsDestination(int destMAC, int stepLimit, List<Integer> checkedMACAddresses) {
+        List<Router> knowsDest = new ArrayList<Router>();
         // Only continue if we're not at limit
         if (stepLimit > 0) {
-            // Check all routers we know
             for (Router router : knownRouters) {
-                if (router.getMACAddress() == destMAC) {
-                    return true;
-                }
-            }
-
-            // If we get this far, then it may be other steps away
-            for (Router router : knownRouters) {
-                if (router.checkIfLinkToDestination(destMAC, stepLimit) == true) {
-                    return true;
+                // If the router hasn't already been checked, check it
+                if (!checkedMACAddresses.contains(router.getMACAddress())) {
+                    Router knows = router.knowsRouter(destMAC, stepLimit-1, checkedMACAddresses);
+                    System.out.println("Router " + router.getMACAddress() + " knows " + destMAC);
+                    knowsDest.add(knows);
                 }
             }
         }
-
-        return false; // If we get this far, this router isn't on the path
+        return knowsDest;
     }
 
     public void naiive(int destMAC, List<Integer> path) {
