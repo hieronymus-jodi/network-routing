@@ -33,7 +33,12 @@ public class Router {
 
     // Used to set isActive externally
     public void setIsActive(boolean isActive) {
+        System.out.println("Router " + this.getMACAddress() + " isActive: " + isActive);
         this.isActive = isActive;
+    }
+
+    public boolean getIsActive() {
+        return this.isActive;
     }
 
     // Used to set MAC Address
@@ -44,6 +49,10 @@ public class Router {
     // Used to check MAC Address - In reality, this wouldn't be requested from router in this way
     public int getMACAddress() {
         return MACAddress;
+    }
+
+    public List<Router> getKnownRouters() {
+        return knownRouters;
     }
 
     // Prints router information
@@ -77,39 +86,49 @@ public class Router {
     }
 
     // Naiive - Sees if knows the destination router directly or indirectly
-    public Router knowsRouter(int destinationMAC, int stepLimit, List<Integer> checkedMACAddresses, List<Boolean> checkResult) {
-        // If this router has already been checked, don't check again
-        if (checkedMACAddresses.contains(getMACAddress())) {
-            return null;
-        }
-        // This router IS the router, and knows itself
-        if (MACAddress == destinationMAC) {
-            System.out.println("FOUND ME!");
+    public Router knowsRouter(int destinationMAC, List<Integer> knowsDestination, List<Integer> doesntKnowDestination, List<Integer> querySources, List<Integer> pathSoFar) {
+        // 1 - Check self
+        if (this.getMACAddress() == destinationMAC) {
+            knowsDestination.add(this.getMACAddress());
             return this;
         }
 
-        // Mark this router as checked
-        checkedMACAddresses.add(getMACAddress());
-        // If this router doesn't know other routers, it shouldn't try to search
-        if (knownRouters.size() == 0) {
-            return null;
-        }
-        // Check immediate routers - Are they the dest?
-        for (Router router : knownRouters) {
-            if (router.getMACAddress() == destinationMAC) {
-                checkResult.add(true);
-                return this; // This router knows the dest
+        for (Router neighbor: knownRouters) {
+            // 2 - Check if neighbors are destination
+            if (neighbor.getMACAddress() == destinationMAC) {
+                knowsDestination.add(this.getMACAddress());
+                return this;
+            }
+            // 3 - Check if neighbors have already been checked, know destination, and haven't been sent packet yet
+            if (knowsDestination.contains(neighbor.getMACAddress()) && !pathSoFar.contains(neighbor.getMACAddress())) {
+                knowsDestination.add(this.getMACAddress());
+                return this;
             }
         }
-        // Do the immediate routers know a router that links to the dest?
-        if (naiive.knowsDestination(destinationMAC, stepLimit-1, checkedMACAddresses, checkResult).size() > 0 ) {
-            System.out.println("I'm " + getMACAddress() + " and I know " + destinationMAC + " by proxy");
-            checkResult.add(true);
-            return this;
+
+        // 4 - Ask neighbor, as long as they haven't checked already, aren't the ones asking, and haven't been set packet yet
+        for (Router neighbor: knownRouters) {
+            if (!doesntKnowDestination.contains(neighbor.getMACAddress()) && !querySources.contains(neighbor.getMACAddress()) && !pathSoFar.contains(neighbor.getMACAddress())) {
+                querySources.add(this.getMACAddress()); // Add self to query sources so neighbor router knows not to query this router back
+                Router result = neighbor.knowsRouter(destinationMAC, knowsDestination, doesntKnowDestination, querySources, pathSoFar); // Recursive call
+                if (result != null) {
+                    knowsDestination.add(this.getMACAddress());
+                    return this;
+                }
+            }
         }
 
-        checkResult.add(false);
-        return null; // All checks failed
+        // If we made it this far, then all checks have failed
+        querySources.clear();
+        doesntKnowDestination.add(MACAddress);
+        return null;
+
+    }
+
+    // Naiive - Returns the cost of the link to a desired router
+    public int getCost (Router router) {
+        int id = knownRouters.indexOf(router);
+        return linkCosts.get(id);
     }
 
     // Calculates route and routes packet to next router. Returns time taken.
@@ -149,13 +168,18 @@ public class Router {
                             return Long.MAX_VALUE; // Failed to pass; Took infinite time
                         }
                     case 'N':
-                        List<Integer> checkedMACAddresses = new ArrayList<Integer>(); // Holds MACAddresses that have been checked
-                        List<Boolean> checkResult = new ArrayList<Boolean>();
-                        checkedMACAddresses.add(getMACAddress()); // Router checked self earlier
-                        checkResult.add(false); // Don't want to loop
+                    System.out.print("At router " + this.getMACAddress());
+                        List<Integer> knowsDestination = new ArrayList<Integer>(); // Holds MACAddresses that are known to have links to dest
+                        List<Integer> doesntKnowDestination = new ArrayList<Integer>(); // Holds MACAddresses that have been checked but don't have links to dest
+                        List<Integer> querySources = new ArrayList<Integer>(); // Holds MACAddresses of querying routers so no endless loop
+                        doesntKnowDestination.add(this.getMACAddress()); // We don't know if this router has a link; assume false
 
-                        List<Router> routersKnowDestination = naiive.knowsDestination(destMAC, 5, checkedMACAddresses, checkResult);
-                        printOptions(routersKnowDestination);
+                        packet.addAddressToPath(this.getMACAddress()); // We're on the path if the packet was sent here
+                        List<Integer> pathSoFar = packet.getPathSoFar(); // Routers the packets have been to already; Don't want to go backwards
+
+                        Router nextRouter = naiive.naiive(destMAC, knowsDestination, doesntKnowDestination, querySources, pathSoFar);
+
+                        nextRouter.routePacket(packet);
                         endTime = System.nanoTime();
                         return endTime - startTime;
                     default:
@@ -189,15 +213,6 @@ public class Router {
             return false;
         }
 
-    }
-
-    // Naiive - Prints routers that are options
-    private void printOptions (List<Router> options) {
-        System.out.print("--> Routing options for " + getMACAddress() + " (" + options.size() + " available): ");
-        for (Router router : options) {
-            System.out.print(router.getMACAddress() + " ");
-        }
-        System.out.println();
     }
 
     // Checks to see if the packet is for this router's network

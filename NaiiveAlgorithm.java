@@ -3,9 +3,6 @@
 // Contains all of the necessary features to sort using Naiive approach.
 
 import java.util.List;
-
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
-
 import java.util.ArrayList;
 
 public class NaiiveAlgorithm {
@@ -20,34 +17,54 @@ public class NaiiveAlgorithm {
         this.knownRouters = knownRouters;
     }
 
-    // Utility function that returns whether this router has a path to the destination router
-    //          `stepLimit` limits how many routers away from current router to go
-    public List<Router> knowsDestination(int destMAC, int stepLimit, List<Integer> checkedMACAddresses, List<Boolean> checkResult) {
+    // Prints routers that are discovered as options
+    private void printOptions (List<Router> options) {
+        System.out.print("--> Routing options for " + parentRouter.getMACAddress() + " (" + options.size() + " available): ");
+        for (Router router : options) {
+            System.out.print(router.getMACAddress() + " ");
+        }
+        System.out.println();
+    }
+
+    // (Unused - for multidirectional links) Utility function that returns the routers the parent router has a direct link to that have path to destination
+    public List<Router> findLinkRouters(int destMAC, List<Integer> knowsDestination, List<Integer> doesntKnowDestination, List<Integer> querySources, List<Integer> pathSoFar) {
         List<Router> knowsDest = new ArrayList<Router>();
-        // Only continue if we're not at limit
-        if (stepLimit > 0) {
-            for (Router router : knownRouters) {
-                // If the router hasn't already been checked, check it
-                if (checkedMACAddresses.contains(router.getMACAddress())) {
-                    // if result was pos, add router
-                    //else if next check
-                }
-                if (!checkedMACAddresses.contains(router.getMACAddress())) {
-                    Router knows = router.knowsRouter(destMAC, stepLimit-1, checkedMACAddresses, checkResult);
-                    if (knows != null) {
-                        System.out.println("Router " + router.getMACAddress() + " knows " + destMAC);
-                        knowsDest.add(router);
-                    }
+
+        for (Router router : knownRouters) {
+            // Only check if hasn't been checked, hasn't been to yet
+            if (!knowsDestination.contains(router.getMACAddress()) && !doesntKnowDestination.contains(router.getMACAddress())) {
+                Router knows = router.knowsRouter(destMAC, knowsDestination, doesntKnowDestination, querySources, pathSoFar);
+                if (knows != null) {
+                    System.out.println("Router " + router.getMACAddress() + " knows " + destMAC);
+                    knowsDest.add(router);
                 }
             }
         }
+
         return knowsDest;
     }
 
-    public void naiive(int destMAC, List<Integer> path) {
+    public Router naiive(int destMAC, List<Integer> knowsDestination, List<Integer> doesntKnowDestination, List<Integer> querySources, List<Integer> pathSoFar) {
         // Create list of routers that are on the path to the destination
-        List<Router> routersToDest = new ArrayList<Router>();
-        
+        // List<Router> routersToDest = findLinkRouters(destMAC, knowsDestination, doesntKnowDestination, querySources, pathSoFar);
+        List<Router> routersToDest = parentRouter.getKnownRouters();
+        printOptions(routersToDest);
 
+        // Find minimum cost link
+        Integer minCost = Integer.MAX_VALUE;
+        Router minRouter = null;
+
+        for (Router option : routersToDest) {
+            int cost = parentRouter.getCost(option);
+
+            if ((cost < minCost) && (option.getIsActive())) {
+                minCost = cost;
+                minRouter = option;
+            }
+        }
+
+        System.out.println("... Cost to " + minRouter.getMACAddress() + ": " + minCost);
+
+        return minRouter;
     }
 }
