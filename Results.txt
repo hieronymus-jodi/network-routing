@@ -1,0 +1,817 @@
+*** *** *** *** *** *** *** *** *** *** *** *** 
+ *** *** *** *** Network Routing *** *** *** ***
+ *** *** *** * By: Jodi Hieronymus * *** *** ***
+ *** *** *** *** *** *** *** *** *** *** *** ***
+
+ ---- ---- ---- ---- ----
+ --- Creating Network ---
+ ---- ---- ---- ---- ----
+
+Router 0 knows 1
+Router 0 knows 2
+Router 1 knows 3
+Router 1 knows 4
+Router 1 knows 5
+Router 2 knows 3
+Router 2 knows 4
+Router 2 knows 5
+Router 3 knows 6
+Router 3 knows 7
+Router 4 knows 6
+Router 4 knows 7
+Router 5 knows 6
+Router 5 knows 7
+Router 6 knows 8
+Router 7 knows 8
+ +++ +++ +++ NETWORK +++ +++ +++
+* ---- Router -- ID: 1 -- Active: true -- ---- *
+      -> (COST: 1) * ---- Router -- ID: 40 -- Active: true -- ---- * 
+      -> (COST: 3) * ---- Router -- ID: 23 -- Active: true -- ---- * 
+* ---- Router -- ID: 40 -- Active: true -- ---- *
+      -> (COST: 6) * ---- Router -- ID: 119 -- Active: true -- ---- *
+      -> (COST: 5) * ---- Router -- ID: 103 -- Active: true -- ---- *
+      -> (COST: 7) * ---- Router -- ID: 33 -- Active: true -- ---- * 
+* ---- Router -- ID: 23 -- Active: true -- ---- *
+      -> (COST: 4) * ---- Router -- ID: 119 -- Active: true -- ---- *
+      -> (COST: 5) * ---- Router -- ID: 103 -- Active: true -- ---- *
+      -> (COST: 2) * ---- Router -- ID: 33 -- Active: true -- ---- * 
+* ---- Router -- ID: 119 -- Active: true -- ---- *
+      -> (COST: 8) * ---- Router -- ID: 104 -- Active: true -- ---- *
+      -> (COST: 3) * ---- Router -- ID: 10 -- Active: true -- ---- * 
+* ---- Router -- ID: 103 -- Active: true -- ---- *
+      -> (COST: 4) * ---- Router -- ID: 104 -- Active: true -- ---- *
+      -> (COST: 7) * ---- Router -- ID: 10 -- Active: true -- ---- * 
+* ---- Router -- ID: 33 -- Active: true -- ---- *
+      -> (COST: 5) * ---- Router -- ID: 104 -- Active: true -- ---- *
+      -> (COST: 4) * ---- Router -- ID: 10 -- Active: true -- ---- *
+* ---- Router -- ID: 104 -- Active: true -- ---- *
+      -> (COST: 2) * ---- Router -- ID: 126 -- Active: true -- ---- *
+* ---- Router -- ID: 10 -- Active: true -- ---- *
+      -> (COST: 1) * ---- Router -- ID: 126 -- Active: true -- ---- *
+* ---- Router -- ID: 126 -- Active: true -- ---- *
+ +++ +++ +++ +++ +++ +++ +++ +++
+
+ +++ +++ +++ GRAPH +++ +++ +++
+      0 1 3 0 0 0 0 0 0
+      0 0 0 6 5 7 0 0 0
+      0 0 0 4 5 2 0 0 0
+      0 0 0 0 0 0 8 3 0
+      0 0 0 0 0 0 4 7 0
+      0 0 0 0 0 0 5 4 0
+      0 0 0 0 0 0 0 0 2
+      0 0 0 0 0 0 0 0 1
+      0 0 0 0 0 0 0 0 0
+ +++ +++ +++ +++ +++ +++ +++ +++
+
+-- -- NAIVE TEST (ALL ACTIVE) #1/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 4: 5
+At router 4--> Routing options for 4 (2 available): 6 7
+... Cost to 6: 4
+At router 6--> Routing options for 6 (1 available): 8
+... Cost to 8: 2
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (ALL ACTIVE) #1/15 RESULT: 7706700ns
+-- -- NAIVE TEST (ALL ACTIVE) #2/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 4: 5
+At router 4--> Routing options for 4 (2 available): 6 7
+... Cost to 6: 4
+At router 6--> Routing options for 6 (1 available): 8
+... Cost to 8: 2
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (ALL ACTIVE) #2/15 RESULT: 7174400ns
+-- -- NAIVE TEST (ALL ACTIVE) #3/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 4: 5
+At router 4--> Routing options for 4 (2 available): 6 7
+... Cost to 6: 4
+At router 6--> Routing options for 6 (1 available): 8
+... Cost to 8: 2
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (ALL ACTIVE) #3/15 RESULT: 12286200ns
+-- -- NAIVE TEST (ALL ACTIVE) #4/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2 
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 4: 5
+At router 4--> Routing options for 4 (2 available): 6 7
+... Cost to 6: 4
+At router 6--> Routing options for 6 (1 available): 8
+... Cost to 8: 2
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (ALL ACTIVE) #4/15 RESULT: 10114400ns
+-- -- NAIVE TEST (ALL ACTIVE) #5/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 4: 5
+At router 4--> Routing options for 4 (2 available): 6 7
+... Cost to 6: 4
+At router 6--> Routing options for 6 (1 available): 8
+... Cost to 8: 2
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (ALL ACTIVE) #5/15 RESULT: 7141700ns
+-- -- NAIVE TEST (ALL ACTIVE) #6/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 4: 5
+At router 4--> Routing options for 4 (2 available): 6 7
+... Cost to 6: 4
+At router 6--> Routing options for 6 (1 available): 8
+... Cost to 8: 2
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (ALL ACTIVE) #6/15 RESULT: 7270700ns
+-- -- NAIVE TEST (ALL ACTIVE) #7/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 4: 5
+At router 4--> Routing options for 4 (2 available): 6 7
+... Cost to 6: 4
+At router 6--> Routing options for 6 (1 available): 8
+... Cost to 8: 2
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (ALL ACTIVE) #7/15 RESULT: 5620100ns
+-- -- NAIVE TEST (ALL ACTIVE) #8/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 4: 5
+At router 4--> Routing options for 4 (2 available): 6 7
+... Cost to 6: 4
+At router 6--> Routing options for 6 (1 available): 8
+... Cost to 8: 2
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (ALL ACTIVE) #8/15 RESULT: 4514600ns
+-- -- NAIVE TEST (ALL ACTIVE) #9/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 4: 5
+At router 4--> Routing options for 4 (2 available): 6 7
+... Cost to 6: 4
+At router 6--> Routing options for 6 (1 available): 8
+... Cost to 8: 2
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (ALL ACTIVE) #9/15 RESULT: 5379200ns
+-- -- NAIVE TEST (ALL ACTIVE) #10/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 4: 5
+At router 4--> Routing options for 4 (2 available): 6 7
+... Cost to 6: 4
+At router 6--> Routing options for 6 (1 available): 8 
+... Cost to 8: 2
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (ALL ACTIVE) #10/15 RESULT: 4167500ns
+-- -- NAIVE TEST (ALL ACTIVE) #11/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 4: 5
+At router 4--> Routing options for 4 (2 available): 6 7
+... Cost to 6: 4
+At router 6--> Routing options for 6 (1 available): 8
+... Cost to 8: 2
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (ALL ACTIVE) #11/15 RESULT: 4094600ns
+-- -- NAIVE TEST (ALL ACTIVE) #12/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 4: 5
+At router 4--> Routing options for 4 (2 available): 6 7
+... Cost to 6: 4
+At router 6--> Routing options for 6 (1 available): 8
+... Cost to 8: 2
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (ALL ACTIVE) #12/15 RESULT: 11522600ns
+-- -- NAIVE TEST (ALL ACTIVE) #13/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 4: 5
+At router 4--> Routing options for 4 (2 available): 6 7
+... Cost to 6: 4
+At router 6--> Routing options for 6 (1 available): 8
+... Cost to 8: 2
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (ALL ACTIVE) #13/15 RESULT: 11756300ns
+-- -- NAIVE TEST (ALL ACTIVE) #14/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 4: 5
+At router 4--> Routing options for 4 (2 available): 6 7
+... Cost to 6: 4
+At router 6--> Routing options for 6 (1 available): 8
+... Cost to 8: 2
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (ALL ACTIVE) #14/15 RESULT: 4904200ns
+-- -- NAIVE TEST (ALL ACTIVE) #15/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 4: 5
+At router 4--> Routing options for 4 (2 available): 6 7
+... Cost to 6: 4
+At router 6--> Routing options for 6 (1 available): 8
+... Cost to 8: 2
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (ALL ACTIVE) #15/15 RESULT: 10855000ns
+---- ---- * NAIVE'S (ALL ACTIVE) RESULTS * ---- ----
+--- > 1 / 15: 7706700ns
+--- > 2 / 15: 7174400ns
+--- > 3 / 15: 12286200ns
+--- > 4 / 15: 10114400ns
+--- > 5 / 15: 7141700ns
+--- > 6 / 15: 7270700ns
+--- > 7 / 15: 5620100ns
+--- > 8 / 15: 4514600ns
+--- > 9 / 15: 5379200ns
+--- > 10 / 15: 4167500ns
+--- > 11 / 15: 4094600ns
+--- > 12 / 15: 11522600ns
+--- > 13 / 15: 11756300ns
+--- > 14 / 15: 4904200ns
+--- > 15 / 15: 10855000ns
+---- ---- ---- ---- ---- ---- ---- ----
+-- -- NAIVE TEST (FAILED ROUTER) # 1/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 4: 5
+At router 4--> Routing options for 4 (2 available): 6 7 
+... Cost to 6: 4
+At router 6--> Routing options for 6 (1 available): 8
+... Cost to 8: 2
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (FAILED ROUTER) #1/15 RESULT: 10367600ns
+Router 4 isActive: false
+-- -- NAIVE TEST (FAILED ROUTER) #2/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 3: 6
+At router 3--> Routing options for 3 (2 available): 6 7
+... Cost to 7: 3
+At router 7--> Routing options for 7 (1 available): 8
+... Cost to 8: 1
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (FAILED ROUTER) #2/15 RESULT: 5306400ns
+-- -- NAIVE TEST (FAILED ROUTER) #3/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 3: 6
+At router 3--> Routing options for 3 (2 available): 6 7
+... Cost to 7: 3
+At router 7--> Routing options for 7 (1 available): 8
+... Cost to 8: 1
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (FAILED ROUTER) #3/15 RESULT: 4324300ns
+-- -- NAIVE TEST (FAILED ROUTER) #4/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 3: 6
+At router 3--> Routing options for 3 (2 available): 6 7
+... Cost to 7: 3
+At router 7--> Routing options for 7 (1 available): 8
+... Cost to 8: 1
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (FAILED ROUTER) #4/15 RESULT: 3959000ns
+-- -- NAIVE TEST (FAILED ROUTER) #5/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 3: 6
+At router 3--> Routing options for 3 (2 available): 6 7
+... Cost to 7: 3
+At router 7--> Routing options for 7 (1 available): 8
+... Cost to 8: 1
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (FAILED ROUTER) #5/15 RESULT: 6893500ns
+-- -- NAIVE TEST (FAILED ROUTER) #6/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 3: 6
+At router 3--> Routing options for 3 (2 available): 6 7
+... Cost to 7: 3
+At router 7--> Routing options for 7 (1 available): 8
+... Cost to 8: 1
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (FAILED ROUTER) #6/15 RESULT: 10578000ns
+-- -- NAIVE TEST (FAILED ROUTER) #7/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5 
+... Cost to 3: 6
+At router 3--> Routing options for 3 (2 available): 6 7
+... Cost to 7: 3
+At router 7--> Routing options for 7 (1 available): 8
+... Cost to 8: 1
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (FAILED ROUTER) #7/15 RESULT: 13732400ns
+-- -- NAIVE TEST (FAILED ROUTER) #8/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5 
+... Cost to 3: 6
+At router 3--> Routing options for 3 (2 available): 6 7
+... Cost to 7: 3
+At router 7--> Routing options for 7 (1 available): 8
+... Cost to 8: 1
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (FAILED ROUTER) #8/15 RESULT: 7034800ns
+-- -- NAIVE TEST (FAILED ROUTER) #9/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 3: 6
+At router 3--> Routing options for 3 (2 available): 6 7
+... Cost to 7: 3
+At router 7--> Routing options for 7 (1 available): 8
+... Cost to 8: 1
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (FAILED ROUTER) #9/15 RESULT: 3883500ns
+-- -- NAIVE TEST (FAILED ROUTER) #10/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 3: 6
+At router 3--> Routing options for 3 (2 available): 6 7
+... Cost to 7: 3
+At router 7--> Routing options for 7 (1 available): 8
+... Cost to 8: 1
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (FAILED ROUTER) #10/15 RESULT: 5514600ns
+-- -- NAIVE TEST (FAILED ROUTER) #11/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2 
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 3: 6
+At router 3--> Routing options for 3 (2 available): 6 7
+... Cost to 7: 3
+At router 7--> Routing options for 7 (1 available): 8
+... Cost to 8: 1
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (FAILED ROUTER) #11/15 RESULT: 12405600ns
+-- -- NAIVE TEST (FAILED ROUTER) #12/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 3: 6
+At router 3--> Routing options for 3 (2 available): 6 7
+... Cost to 7: 3
+At router 7--> Routing options for 7 (1 available): 8
+... Cost to 8: 1
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (FAILED ROUTER) #12/15 RESULT: 13554400ns
+-- -- NAIVE TEST (FAILED ROUTER) #13/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 3: 6
+At router 3--> Routing options for 3 (2 available): 6 7 
+... Cost to 7: 3
+At router 7--> Routing options for 7 (1 available): 8
+... Cost to 8: 1
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (FAILED ROUTER) #13/15 RESULT: 12162000ns
+-- -- NAIVE TEST (FAILED ROUTER) #14/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 3: 6
+At router 3--> Routing options for 3 (2 available): 6 7
+... Cost to 7: 3
+At router 7--> Routing options for 7 (1 available): 8
+... Cost to 8: 1
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (FAILED ROUTER) #14/15 RESULT: 10011100ns
+-- -- NAIVE TEST (FAILED ROUTER) #15/15 -- --
+At router 0--> Routing options for 0 (2 available): 1 2
+... Cost to 1: 1
+At router 1--> Routing options for 1 (3 available): 3 4 5
+... Cost to 3: 6
+At router 3--> Routing options for 3 (2 available): 6 7
+... Cost to 7: 3
+At router 7--> Routing options for 7 (1 available): 8
+... Cost to 8: 1
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- NAIVE (FAILED ROUTER) #15/15 RESULT: 12344100ns
+Router 4 isActive: true
+---- ---- * NAIVE'S (FAILED ROUTER) RESULTS * ---- ----
+--- > 1 / 15: 10367600ns
+--- > 2 / 15: 5306400ns
+--- > 3 / 15: 4324300ns
+--- > 4 / 15: 3959000ns
+--- > 5 / 15: 6893500ns
+--- > 6 / 15: 10578000ns
+--- > 7 / 15: 13732400ns
+--- > 8 / 15: 7034800ns
+--- > 9 / 15: 3883500ns
+--- > 10 / 15: 5514600ns
+--- > 11 / 15: 12405600ns
+--- > 12 / 15: 13554400ns
+--- > 13 / 15: 12162000ns
+--- > 14 / 15: 10011100ns
+--- > 15 / 15: 12344100ns
+---- ---- ---- ---- ---- ---- ---- ----
+-- -- DIJKSTRAS TEST (ALL ACTIVE) #1/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- DIJSKTRAS (ALL ACTIVE) #1/15 RESULT: 73949200ns
+-- -- DIJKSTRAS TEST (ALL ACTIVE) #2/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- DIJSKTRAS (ALL ACTIVE) #2/15 RESULT: 1925200ns
+-- -- DIJKSTRAS TEST (ALL ACTIVE) #3/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- DIJSKTRAS (ALL ACTIVE) #3/15 RESULT: 2009300ns
+-- -- DIJKSTRAS TEST (ALL ACTIVE) #4/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- DIJSKTRAS (ALL ACTIVE) #4/15 RESULT: 2453100ns
+-- -- DIJKSTRAS TEST (ALL ACTIVE) #5/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- DIJSKTRAS (ALL ACTIVE) #5/15 RESULT: 4167300ns
+-- -- DIJKSTRAS TEST (ALL ACTIVE) #6/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- DIJSKTRAS (ALL ACTIVE) #6/15 RESULT: 5670700ns
+-- -- DIJKSTRAS TEST (ALL ACTIVE) #7/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- DIJSKTRAS (ALL ACTIVE) #7/15 RESULT: 3536400ns
+-- -- DIJKSTRAS TEST (ALL ACTIVE) #8/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- DIJSKTRAS (ALL ACTIVE) #8/15 RESULT: 5684900ns
+-- -- DIJKSTRAS TEST (ALL ACTIVE) #9/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- DIJSKTRAS (ALL ACTIVE) #9/15 RESULT: 4540600ns
+-- -- DIJKSTRAS TEST (ALL ACTIVE) #10/15 -- --
+
+PATH : 0 2 5 7 8 
+
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- DIJSKTRAS (ALL ACTIVE) #10/15 RESULT: 3018200ns
+-- -- DIJKSTRAS TEST (ALL ACTIVE) #11/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- DIJSKTRAS (ALL ACTIVE) #11/15 RESULT: 4988900ns
+-- -- DIJKSTRAS TEST (ALL ACTIVE) #12/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- DIJSKTRAS (ALL ACTIVE) #12/15 RESULT: 4614500ns
+-- -- DIJKSTRAS TEST (ALL ACTIVE) #13/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- DIJSKTRAS (ALL ACTIVE) #13/15 RESULT: 3331700ns
+-- -- DIJKSTRAS TEST (ALL ACTIVE) #14/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- DIJSKTRAS (ALL ACTIVE) #14/15 RESULT: 2760500ns
+-- -- DIJKSTRAS TEST (ALL ACTIVE) #15/15 -- --
+
+PATH : 0 2 5 7 8 
+
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- DIJSKTRAS (ALL ACTIVE) #15/15 RESULT: 3887400ns
+---- ---- * DIJKSTRA'S (ALL ACTIVE) RESULTS * ---- ----
+--- > 1 / 15: 73949200ns
+--- > 2 / 15: 1925200ns
+--- > 3 / 15: 2009300ns
+--- > 4 / 15: 2453100ns
+--- > 5 / 15: 4167300ns
+--- > 6 / 15: 5670700ns
+--- > 7 / 15: 3536400ns
+--- > 8 / 15: 5684900ns
+--- > 9 / 15: 4540600ns
+--- > 10 / 15: 3018200ns
+--- > 11 / 15: 4988900ns
+--- > 12 / 15: 4614500ns
+--- > 13 / 15: 3331700ns
+--- > 14 / 15: 2760500ns
+--- > 15 / 15: 3887400ns
+---- ---- ---- ---- ---- ---- ---- ----
+-- -- DIJKSTRAS TEST (FAILED ROUTER) # 1/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- * PACKET DELIVERED! * --
+Router: 126.0.0.1
+Host: 126.10.1.8
+Application Data: ~* Yay! I made it to my destination! *~
+
+-- DIJSKTRAS (FAILED ROUTER) #1/15 RESULT: 3477600ns
+Router 5 isActive: false
+-- -- DIJKSTRAS TEST (FAILED ROUTER) #2/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- DIJSKTRAS (FAILED ROUTER) #2/15 RESULT: 9223372036854775807ns
+-- -- DIJKSTRAS TEST (FAILED ROUTER) #3/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- DIJSKTRAS (FAILED ROUTER) #3/15 RESULT: 9223372036854775807ns
+-- -- DIJKSTRAS TEST (FAILED ROUTER) #4/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- DIJSKTRAS (FAILED ROUTER) #4/15 RESULT: 9223372036854775807ns
+-- -- DIJKSTRAS TEST (FAILED ROUTER) #5/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- DIJSKTRAS (FAILED ROUTER) #5/15 RESULT: 9223372036854775807ns
+-- -- DIJKSTRAS TEST (FAILED ROUTER) #6/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- DIJSKTRAS (FAILED ROUTER) #6/15 RESULT: 9223372036854775807ns
+-- -- DIJKSTRAS TEST (FAILED ROUTER) #7/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- DIJSKTRAS (FAILED ROUTER) #7/15 RESULT: 9223372036854775807ns
+-- -- DIJKSTRAS TEST (FAILED ROUTER) #8/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- DIJSKTRAS (FAILED ROUTER) #8/15 RESULT: 9223372036854775807ns
+-- -- DIJKSTRAS TEST (FAILED ROUTER) #9/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- DIJSKTRAS (FAILED ROUTER) #9/15 RESULT: 9223372036854775807ns
+-- -- DIJKSTRAS TEST (FAILED ROUTER) #10/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- DIJSKTRAS (FAILED ROUTER) #10/15 RESULT: 9223372036854775807ns
+-- -- DIJKSTRAS TEST (FAILED ROUTER) #11/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- DIJSKTRAS (FAILED ROUTER) #11/15 RESULT: 9223372036854775807ns
+-- -- DIJKSTRAS TEST (FAILED ROUTER) #12/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- DIJSKTRAS (FAILED ROUTER) #12/15 RESULT: 9223372036854775807ns
+-- -- DIJKSTRAS TEST (FAILED ROUTER) #13/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- DIJSKTRAS (FAILED ROUTER) #13/15 RESULT: 9223372036854775807ns
+-- -- DIJKSTRAS TEST (FAILED ROUTER) #14/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- DIJSKTRAS (FAILED ROUTER) #14/15 RESULT: 9223372036854775807ns
+-- -- DIJKSTRAS TEST (FAILED ROUTER) #15/15 -- --
+
+PATH : 0 2 5 7 8
+
+-- DIJSKTRAS (FAILED ROUTER) #15/15 RESULT: 9223372036854775807ns
+Router 5 isActive: true
+---- ---- * DIJKSTRA'S (FAILED ROUTER) RESULTS * ---- ----
+--- > 1 / 15: 3477600ns
+--- > 2 / 15: 9223372036854775807ns
+--- > 3 / 15: 9223372036854775807ns
+--- > 4 / 15: 9223372036854775807ns
+--- > 5 / 15: 9223372036854775807ns
+--- > 6 / 15: 9223372036854775807ns
+--- > 7 / 15: 9223372036854775807ns
+--- > 8 / 15: 9223372036854775807ns
+--- > 9 / 15: 9223372036854775807ns
+--- > 10 / 15: 9223372036854775807ns
+--- > 11 / 15: 9223372036854775807ns
+--- > 12 / 15: 9223372036854775807ns
+--- > 13 / 15: 9223372036854775807ns
+--- > 14 / 15: 9223372036854775807ns
+--- > 15 / 15: 9223372036854775807ns
+---- ---- ---- ---- ---- ---- ---- ----

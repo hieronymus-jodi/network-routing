@@ -10,7 +10,6 @@ public class Router {
     int networkID; // Using Class A IPv4 addresses - This should match first byte of address
     int MACAddress; // In this case, using the id in the list/array
     boolean isActive;
-    FailMethod failMethod;
     
     // Dijkstras
     DijkstrasAlgorithm dijkstras;
