@@ -31,7 +31,7 @@ public class Packet {
         this.routeMethod = 'D';
     }
 
-    public void setNaiive() {
+    public void setNaive() {
         this.routeMethod = 'N';
     }
 

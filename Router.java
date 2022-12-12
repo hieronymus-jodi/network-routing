@@ -17,8 +17,8 @@ public class Router {
     int[][] graphNetwork;
     List<Router> allRouters = new ArrayList<Router>();
 
-    // Naiive Approach
-    NaiiveAlgorithm naiive;
+    // Naive Approach
+    NaiveAlgorithm naive;
     List<Router> knownRouters = new ArrayList<Router>();
     List<Integer> linkCosts = new ArrayList<Integer>();
 
@@ -26,7 +26,7 @@ public class Router {
         this.networkID = networkID;
         this.MACAddress = MACAddress;
         this.dijkstras = new DijkstrasAlgorithm(numRouters);
-        this.naiive = new NaiiveAlgorithm(this);
+        this.naive = new NaiveAlgorithm(this);
 
         isActive = true;
     }
@@ -63,7 +63,7 @@ public class Router {
         System.out.println("---- *");
     }
 
-    // Naiive Approach - Prints all known routers
+    // Naive Approach - Prints all known routers
     public void printKnownRouters() {
 
         for (int i = 0; i < knownRouters.size(); i++) {
@@ -72,11 +72,11 @@ public class Router {
         }
     }
 
-    // Naiive Approach - Adds a known router
+    // Naive Approach - Adds a known router
     public void addKnownRouter(Router newRouter, Integer cost) {
         this.knownRouters.add(newRouter);
         this.linkCosts.add(cost);
-        this.naiive.setKnownRouters(knownRouters);
+        this.naive.setKnownRouters(knownRouters);
     }
 
     // Dijkstras - Sets the entire network of routers in graph form
@@ -85,7 +85,7 @@ public class Router {
         this.allRouters = allRouters;
     }
 
-    // Naiive - Sees if knows the destination router directly or indirectly
+    // Naive - Sees if knows the destination router directly or indirectly
     public Router knowsRouter(int destinationMAC, List<Integer> knowsDestination, List<Integer> doesntKnowDestination, List<Integer> querySources, List<Integer> pathSoFar) {
         // 1 - Check self
         if (this.getMACAddress() == destinationMAC) {
@@ -125,7 +125,7 @@ public class Router {
 
     }
 
-    // Naiive - Returns the cost of the link to a desired router
+    // Naive - Returns the cost of the link to a desired router
     public int getCost (Router router) {
         int id = knownRouters.indexOf(router);
         return linkCosts.get(id);
@@ -177,7 +177,7 @@ public class Router {
                         packet.addAddressToPath(this.getMACAddress()); // We're on the path if the packet was sent here
                         List<Integer> pathSoFar = packet.getPathSoFar(); // Routers the packets have been to already; Don't want to go backwards
 
-                        Router nextRouter = naiive.naiive(destMAC, knowsDestination, doesntKnowDestination, querySources, pathSoFar);
+                        Router nextRouter = naive.naive(destMAC, knowsDestination, doesntKnowDestination, querySources, pathSoFar);
 
                         nextRouter.routePacket(packet);
                         endTime = System.nanoTime();

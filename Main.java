@@ -34,9 +34,9 @@ public class Main {
         String appData = "~* Yay! I made it to my destination! *~";
         Packet packet = new Packet(sourceMAC, destinationMAC, sourceAddress, destAddress, appData);
 
-        // Route naiively
-        routeNaiiveAllActive(network.get(0), packet);
-        routeNaiiveRouterInactive(network.get(0), packet, network, 4);
+        // Route naively
+        routeNaiveAllActive(network.get(0), packet);
+        routeNaiveRouterInactive(network.get(0), packet, network, 4);
 
         // Route packet using Dijkstra's
         routeDijkstrasAllActive(network.get(0), packet);
@@ -104,53 +104,53 @@ public class Main {
         }
     }
 
-    // Routes packet using Naiive algorithm NUMTEST times. Return time results
+    // Routes packet using Naive algorithm NUMTEST times. Return time results
     //      All routers are active
-    private static List<Long> routeNaiiveAllActive(Router sourceRouter, Packet packet) {
+    private static List<Long> routeNaiveAllActive(Router sourceRouter, Packet packet) {
         List<Long> times = new ArrayList<Long>();
-        packet.setNaiive();
+        packet.setNaive();
 
         for (int testNum = 1; testNum < NUMTESTS + 1; testNum++) {
-            System.out.println("-- -- NAIIVE TEST (ALL ACTIVE) #" + testNum + "/" + NUMTESTS + " -- --");
+            System.out.println("-- -- NAIVE TEST (ALL ACTIVE) #" + testNum + "/" + NUMTESTS + " -- --");
 
             long time = sourceRouter.routePacket(packet);
             times.add(time);
 
-            System.out.println("-- NAIIVE (ALL ACTIVE) #" + testNum + "/" + NUMTESTS + " RESULT: " + time + "ns");
+            System.out.println("-- NAIVE (ALL ACTIVE) #" + testNum + "/" + NUMTESTS + " RESULT: " + time + "ns");
         }
 
-        printTimeResults("NAIIVE'S (ALL ACTIVE)", times);
+        printTimeResults("NAIVE'S (ALL ACTIVE)", times);
         return times;
 
     }
 
-    // Routes packet using Naiive Algorithm NUMTESTS times. Returns time results
+    // Routes packet using Naive Algorithm NUMTESTS times. Returns time results
     //      Sets specified router as inactive
-    private static List<Long> routeNaiiveRouterInactive(Router sourceRouter, Packet packet, List<Router> network, int inactiveRouterID) {
+    private static List<Long> routeNaiveRouterInactive(Router sourceRouter, Packet packet, List<Router> network, int inactiveRouterID) {
         List<Long> times = new ArrayList<Long>();
-        packet.setNaiive();
+        packet.setNaive();
 
         // Start with all routers active
-        System.out.println("-- -- NAIIVE TEST (FAILED ROUTER) # 1/" + NUMTESTS + " -- --");
+        System.out.println("-- -- NAIVE TEST (FAILED ROUTER) # 1/" + NUMTESTS + " -- --");
         long time = sourceRouter.routePacket(packet);
         times.add(time);
-        System.out.println("-- NAIIVE (FAILED ROUTER) #1/" + NUMTESTS + " RESULT: " + time + "ns");
+        System.out.println("-- NAIVE (FAILED ROUTER) #1/" + NUMTESTS + " RESULT: " + time + "ns");
 
         // Set router as inactive
         network.get(inactiveRouterID).setIsActive(false);
         // Continue at 2
         for (int testNum = 2; testNum < NUMTESTS + 1; testNum++) {
-            System.out.println("-- -- NAIIVE TEST (FAILED ROUTER) #" + testNum + "/" + NUMTESTS + " -- --");
+            System.out.println("-- -- NAIVE TEST (FAILED ROUTER) #" + testNum + "/" + NUMTESTS + " -- --");
 
             time = sourceRouter.routePacket(packet);
             times.add(time);
 
-            System.out.println("-- NAIIVE (FAILED ROUTER) #" + testNum + "/" + NUMTESTS + " RESULT: " + time + "ns");
+            System.out.println("-- NAIVE (FAILED ROUTER) #" + testNum + "/" + NUMTESTS + " RESULT: " + time + "ns");
         }
 
         network.get(inactiveRouterID).setIsActive(true); // Turn back on for future tests
 
-        printTimeResults("NAIIVE'S (FAILED ROUTER)", times);
+        printTimeResults("NAIVE'S (FAILED ROUTER)", times);
         return times;
     }
 

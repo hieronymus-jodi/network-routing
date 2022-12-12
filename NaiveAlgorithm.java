@@ -1,15 +1,15 @@
 // Jodi Hieronymus - CPE 400 Final Project - Fall 2022
 
-// Contains all of the necessary features to sort using Naiive approach.
+// Contains all of the necessary features to sort using Naive approach.
 
 import java.util.List;
 import java.util.ArrayList;
 
-public class NaiiveAlgorithm {
+public class NaiveAlgorithm {
     Router parentRouter;
     List<Router> knownRouters = new ArrayList<Router>(); // List of all routers the router running the algorithm knows
 
-    public NaiiveAlgorithm(Router parentRouter) {
+    public NaiveAlgorithm(Router parentRouter) {
         this.parentRouter = parentRouter;
     }
 
@@ -44,7 +44,7 @@ public class NaiiveAlgorithm {
         return knowsDest;
     }
 
-    public Router naiive(int destMAC, List<Integer> knowsDestination, List<Integer> doesntKnowDestination, List<Integer> querySources, List<Integer> pathSoFar) {
+    public Router naive(int destMAC, List<Integer> knowsDestination, List<Integer> doesntKnowDestination, List<Integer> querySources, List<Integer> pathSoFar) {
         // Create list of routers that are on the path to the destination
         // List<Router> routersToDest = findLinkRouters(destMAC, knowsDestination, doesntKnowDestination, querySources, pathSoFar);
         List<Router> routersToDest = parentRouter.getKnownRouters();
